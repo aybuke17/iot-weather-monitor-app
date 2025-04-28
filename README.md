@@ -1,50 +1,50 @@
-# Welcome to your Expo app 👋
+# ESP32 IoT Weather Station App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Bu proje bir **ESP32 tabanlı IoT Hava Durumu İstasyonu** için geliştirilen mobil uygulamadır. 
+ThingSpeak üzerinden sıcaklık, nem, basınç ve ışık şiddeti verilerini çekerek anlık grafikler 
+ve son ölçümleri gösterir.
 
-## Get started
+## Kullanılan Teknolojiler
+- React Native
+- react-native-chart-kit
+- react-native-paper
+- ThingSpeak API
 
-1. Install dependencies
+## Özellikler
+- Sıcaklık, nem, basınç ve ışık şiddeti ölçümlerinin grafikle gösterimi
+- Anlık veri güncellemesi (30 saniyede bir)
 
+## 🛠️ Kurulum
+1. Projeyi klonlayın:
    ```bash
+   git clone https://github.com/KULLANICI_ADI/iot-weather-station-app.git
+   cd iot-weather-station-app
+
+2. Bağımlılıkları yükleyin:
    npm install
-   ```
 
-2. Start the app
+3. Ortam değişkenleri için .env dosyası oluşturun:
+   Proje ana klasörüne .env dosyası açın.
+   İçerisine şunları ekleyin:
 
-   ```bash
-    npx expo start
-   ```
+   CHANNEL_ID=YOUR_CHANNEL_ID
+   READ_API_KEY=YOUR_READ_API_KEY
 
-In the output, you'll find options to open the app in a
+4. babel.config.js dosyasını oluşturun ve aşağıdaki kodu yapıştırın:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   module.exports = function(api) {
+      api.cache(true);
+      return {
+         presets: ['babel-preset-expo'],
+         plugins: [
+            ["module:react-native-dotenv"]
+         ]
+      };
+   };
+5. .gitignore dosyasına şunu ekleyin:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+   .env
 
-## Get a fresh project
+6. Uygulamayı cache temizleyerek başlatın:
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+   npx expo start -c
