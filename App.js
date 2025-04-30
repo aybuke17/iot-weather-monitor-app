@@ -15,6 +15,9 @@ export default function App() {
     lux: [],
     lastUpdate: 'Henüz veri alınmadı'
   });
+  
+  const [predictedTemp, setPredictedTemp] = useState(null);
+
 
   const fetchThingSpeakData = async () => {
     try {
@@ -62,12 +65,31 @@ export default function App() {
         lux,
         lastUpdate
       });
+
+      const predicted = calculatePredictedTemperature(temperature);
+      setPredictedTemp(predicted);
     } catch (error) {
       console.error('Veri çekme hatası:', error);
     } finally {
       setIsLoading(false);
       setRefreshing(false);
     }
+  };
+
+  const calculatePredictedTemperature = (temperatures) => {
+    if (temperatures.length < 2) {
+      return null; // yeterli veri yoksa tahmin yapmayalım
+    }
+  
+    let totalChange = 0;
+    for (let i = 1; i < temperatures.length; i++) {
+      totalChange += temperatures[i] - temperatures[i - 1];
+    }
+  
+    const averageChange = totalChange / (temperatures.length - 1);
+    const predicted = temperatures[temperatures.length - 1] + averageChange;
+  
+    return predicted.toFixed(2); // Sonuç 2 ondalıklı
   };
 
   const onRefresh = useCallback(() => {
@@ -170,10 +192,21 @@ export default function App() {
 
             <Card style={styles.card}>
               <Card.Title title="Son Değerler" />
+
+
               <Card.Content>
                 <View style={styles.valueContainer}>
-                  <Text style={styles.valueText}>Sıcaklık: {sensorData.temperature[sensorData.temperature.length - 1]} °C</Text>
-                  <Text style={styles.valueText}>Nem: {sensorData.humidity[sensorData.humidity.length - 1]} %</Text>
+                <Text style={styles.valueText}>
+                   Sıcaklık: {sensorData.temperature.length > 0 ? sensorData.temperature[sensorData.temperature.length - 1] + ' °C' : 'Veri yok'}
+                </Text>
+                <Text style={styles.valueText}>
+                  Nem: {sensorData.humidity.length > 0 ? sensorData.humidity[sensorData.humidity.length - 1] + ' %' : 'Veri yok'}
+                </Text>
+                  {predictedTemp && (
+                    <Text style={styles.valueText}>
+                      🔮 Tahmini Sıcaklık (5 dk sonra): {predictedTemp} °C
+                    </Text>
+)}
                   <Text style={styles.valueText}>Basınç: {sensorData.pressure[sensorData.pressure.length - 1]} hPa</Text>
                   <Text style={styles.valueText}>Işık: {sensorData.lux[sensorData.lux.length - 1]} lux</Text>
                 </View>
